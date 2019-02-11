@@ -24,12 +24,33 @@ SM_DATA(sm_rpm) int rpm_init = 0;
 SM_DATA(sm_rpm) int rpm_cur;
 SM_DATA(sm_rpm) ican_link_info_t rpm_connection;
 
+int count =  0;
+static char tmp[10];
+
+int printf_int (int i);
+
 void SM_FUNC(sm_rpm) rpm_update(int val, int ok)
 {
     // avoid unsigned modulo operations
+    /*puts("\nok:");
+    printf_int(ok);
+	puts("\nval:");
+    printf_int(val);*/
     volatile int v = ok ? (rpm_cur = val) : rpm_cur;
+    puts("\nvolatile v");
+    printf_int(v);
     char v1 = '0' + (v % 10);
     char v2 = '0' + ((v/10) % 10);
+
+    count++;
+    puts("\ncount:");
+    printf_int(count);
+	puts(" ");
+    /*tmp[1] = v1;
+    tmp[0] = v2;
+    tmp[2] = '\0';
+    puts(strcat("\nrpm: ", tmp));*/
+
 
     if (ok)
     {

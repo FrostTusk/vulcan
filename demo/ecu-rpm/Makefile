@@ -27,7 +27,7 @@ else
 endif
 
 TARGET_NO_MAC = no_mac_$(TARGET)
-OBJECTS = $(SOURCES:.c=.o) sm_led.o $(LIBVULCAN).o
+OBJECTS = $(SOURCES:.c=.o) unprot.o sm_led.o $(LIBVULCAN).o
 
 all: $(TARGET)
 
@@ -38,11 +38,17 @@ $(LIBVULCAN).o: $(CAN_AUTH_DIR)/$(LIBVULCAN).c
 sm_led.o: ../../drivers/sm_led.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+unprot.o: unprot.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
 $(TARGET_NO_MAC): $(OBJECTS)
 	$(LD) $(LDFLAGS) -o $@ $^
 
 $(TARGET): $(TARGET_NO_MAC)
 	$(SANCUS_CRYPTO) $(CRYPTOFLAGS) -o $@ $<
+
+load_sec: clean $(TARGET)
+	$(SANCUS_LOAD) -device $(DEV) -baudrate 115200 $(TARGET)
 
 load: clean $(TARGET)
 	$(SANCUS_LOAD) -device $(DEV) -baudrate 115200 $(TARGET)

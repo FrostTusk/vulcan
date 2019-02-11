@@ -62,13 +62,20 @@ int VULCAN_FUNC vatican_mac_create(uint8_t *mac, uint16_t id, uint8_t* msg,
 
     // locate vatiCAN protocol info struct
     vatican_cur = NULL;
-    for (i = 0; i < vatican_nb_connections; i++)
+    for (i = 0; i < vatican_nb_connections; i++) {
+		pr_info1("connection: %d\n", i);
+		pr_info1("vatican id: %d\n", vatican_connections[i].id);
+		pr_info1("id: %d\n", id);
         if (vatican_connections[i].id == id)
         {
             vatican_cur = &vatican_connections[i];
             break;
         }
-    if (!vatican_cur) return -EINVAL;
+	}
+    if (!vatican_cur) {
+		pr_info("inside problem");		
+		return -EINVAL;
+	}
 
     // construct associated data (zero-pad msg); wait for final nonce increment
     // NOTE: use union type to avoid bit shifts and compile better code
@@ -232,12 +239,16 @@ int VULCAN_FUNC vulcan_recv(ican_t *ican, uint16_t *id, uint8_t *buf, int block)
     /* 1. receive any CAN message (ID | payload) */
     if ((rv = vatican_receive(ican, id, buf, block)) < 0)
         return rv;
-
+    
+    pr_info("ping");
     /* 2. authenticated connection ? calculate and verify MAC */
     if (vatican_mac_create(mac_me.bytes, *id, buf, rv) >= 0)
     {
+		pr_info("ping2");
         recv_len = vatican_receive(ican, &id_recv, mac_recv.bytes, /*block=*/1);
-        fail = (id_recv != *id + 1) || (recv_len != CAN_PAYLOAD_SIZE) ||
+        pr_info1("mac_me.quad: %d", mac_me.quad);
+        pr_info1("mac_recv.quad: %d", mac_recv.quad);
+		fail = (id_recv != *id + 1) || (recv_len != CAN_PAYLOAD_SIZE) ||
                 (mac_me.quad != mac_recv.quad);
     }
 
