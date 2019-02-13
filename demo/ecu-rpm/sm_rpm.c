@@ -37,8 +37,8 @@ void SM_FUNC(sm_rpm) rpm_update(int val, int ok)
 	puts("\nval:");
     printf_int(val);*/
     volatile int v = ok ? (rpm_cur = val) : rpm_cur;
-    puts("\nvolatile v");
-    printf_int(v);
+    /*puts("\nvolatile v");
+    printf_int(v);*/
     char v1 = '0' + (v % 10);
     char v2 = '0' + ((v/10) % 10);
 

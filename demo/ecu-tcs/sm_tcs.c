@@ -89,7 +89,7 @@ void SM_FUNC(sm_tcs) tcs_handle_key_press(PmodKypdKey key)
             break;
 
         case Key_0:
-            #if VATICAN_INCLUDE_NONCE_GENERATOR
+            #ifdef VATICAN_INCLUDE_NONCE_GENERATOR
                 nonce = nonce_generator_run(&msp_ican);
                 vatican_nonce_reset(nonce);
             #endif

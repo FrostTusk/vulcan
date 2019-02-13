@@ -240,11 +240,11 @@ int VULCAN_FUNC vulcan_recv(ican_t *ican, uint16_t *id, uint8_t *buf, int block)
     if ((rv = vatican_receive(ican, id, buf, block)) < 0)
         return rv;
     
-    pr_info("ping");
+    //pr_info("ping");
     /* 2. authenticated connection ? calculate and verify MAC */
     if (vatican_mac_create(mac_me.bytes, *id, buf, rv) >= 0)
     {
-		pr_info("ping2");
+	//pr_info("ping2");
         recv_len = vatican_receive(ican, &id_recv, mac_recv.bytes, /*block=*/1);
         pr_info1("mac_me.quad: %d", mac_me.quad);
         pr_info1("mac_recv.quad: %d", mac_recv.quad);

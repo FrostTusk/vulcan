@@ -341,11 +341,13 @@ int VULCAN_FUNC vulcan_recv(ican_t *ican, uint16_t *id, uint8_t *buf, int block)
     cmd_expected = (cmd==LEIA_CMD_AEC_EPOCH) ? LEIA_CMD_AEC_MAC : LEIA_CMD_MAC;
     auth_fail_sig = (cmd==LEIA_CMD_AEC_EPOCH) && !auth_fail_resp;
     id_mac_expected = auth_fail_sig ? *id : *id + 1;
-
+    
+    pr_info2("mac_me.quad: %d and mac_recv.quad: %d", mac_me.quad, mac_recv.quad);
     if (fail || (cmd_mac != cmd_expected) || (id_mac != id_mac_expected) ||
        (len_mac != CAN_PAYLOAD_SIZE) || (mac_me.quad != mac_recv.quad))
     {
-        #ifndef LEIA_OMIT_AUTH_FAIL
+        pr_info1("fail is %d\n", fail);
+	#ifndef LEIA_OMIT_AUTH_FAIL
             return leia_auth_fail_send(ican, *id);
         #else
             pr_info("rejecting invalid message");
