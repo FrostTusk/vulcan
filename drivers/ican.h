@@ -30,7 +30,7 @@ typedef enum
 #define ICAN_MASK_RECEIVE_SINGLE        0xFFFF
 // We use (ID+1) for the authentication frame
 #define ICAN_MASK_RECEIVE_SINGLE_AUTH   0xFFFE
-#define ICAN_FILTER_EXTENDED            0x80000
+#define ICAN_FILTER_EXTENDED            0x0
 
 #define ICAN_IOCTL_ABORT                1
 
