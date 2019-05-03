@@ -45,7 +45,9 @@ void VULCAN_FUNC leia_mac_create(uint8_t *mac, uint16_t id, uint8_t* msg,
     ican_tag_t tag;
     ican_buf_t *mac_out = (ican_buf_t*) mac;
     int i;
+    pr_info1("pre garbage output %d\n", 1);
     ASSERT(leia_cur);
+    pr_info1("garbage output %d\n", 1);
 
     // construct associated data (zero-pad msg)
     // NOTE: use union type to avoid bit shifts and compile better code
@@ -315,23 +317,29 @@ int VULCAN_FUNC vulcan_recv(ican_t *ican, uint16_t *id, uint8_t *buf, int block)
     // ^^volatile to work around compiler bug
     uint16_t c, id_mac, id_mac_expected;
     int rv, len_mac, auth_fail_sig, auth_fail_resp = 0, fail = 0;
+    pr_info1("garbage another output %d\n", 1);
 
     /* 1. receive any extended CAN message (ID | cmd | counter | payload) */
     if (((rv = leia_receive(ican, id, buf, (uint8_t*) &cmd, &c, block)) < 0) ||
          ((cmd != LEIA_CMD_DATA) && (cmd != LEIA_CMD_AEC_EPOCH)))
         return -EINVAL;
 
+    pr_info2("garbage yet another %d  output %d\n", *id, rv);
+
     /* 2. authenticated connection ? process AUTH_FAIL response, if any */
     if (!leia_find_connection(*id)) return rv;
+    pr_info1("garbage yet another output %d\n", 3);
     if ((auth_fail_resp = ((cmd == LEIA_CMD_AEC_EPOCH) && !leia_cur->c)))
     {
         ASSERT(rv == CAN_PAYLOAD_SIZE);
         leia_auth_fail_receive(*id, (uint64_t*) buf);
     }
+    pr_info1("garbage yet yet another output %d\n", 1);
 
     /* 3. calculate and verify MAC */
     if (!(fail |= (c < leia_cur->c)))
     {
+	 pr_info1("garbage yet another output %d\n", 2);
         leia_mac_create(mac_me.bytes, *id, buf, rv, c);
         len_mac = leia_receive(ican, &id_mac, mac_recv.bytes, (uint8_t*)
                                &cmd_mac, &c, /*block=*/1);
