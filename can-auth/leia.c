@@ -327,7 +327,7 @@ int VULCAN_FUNC vulcan_recv(ican_t *ican, uint16_t *id, uint8_t *buf, int block)
     pr_info2("garbage yet another %d  output %d\n", *id, rv);
 
     /* 2. authenticated connection ? process AUTH_FAIL response, if any */
-    if (!leia_find_connection(*id)) return rv;
+    if (!leia_find_connection(*id)) return -EINVAL;
     pr_info1("garbage yet another output %d\n", 3);
     if ((auth_fail_resp = ((cmd == LEIA_CMD_AEC_EPOCH) && !leia_cur->c)))
     {
